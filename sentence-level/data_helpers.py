@@ -13,7 +13,7 @@ def prepare_output_file():
     """Create all output files required for reporting results"""
     result_file = open("results/" + str(
         datetime.now()) + "_svm_results_" + config.class_task + "_" + config.dataset + "_random" + str(
-        config.randomized_labels) + "_" + config.kernel + ".csv", "a")
+        config.randomized) + "_" + config.kernel + ".csv", "a")
     return result_file
 
 def read_mat_file(filename):
@@ -211,68 +211,58 @@ def prepare_logs():
     # preds, test_y, acc, p,r, f1, train_acc, bacc, bf1, bp, br, boot_preds
     n_subj = len(config.heldout_subjects)
     accuracies = [[] for _ in range(n_subj)]; predictions = [[] for _ in range(n_subj)]; 
-    true_labels = [[] for _ in range(n_subj)]; train_accuracies = [];
     f1s = [[] for _ in range(n_subj)]; ps = [[] for _ in range(n_subj)];  
     rs = [[] for _ in range(n_subj)];  
     baccs = [[] for _ in range(n_subj)]; bf1s = [[] for _ in range(n_subj)];    
     bps = [[] for _ in range(n_subj)]; brs = [[] for _ in range(n_subj)];   
     boot_preds_all = [[] for _ in range(n_subj)];   
-    return [[predictions, true_labels, accuracies, ps, rs, f1s, train_accuracies], \
-        [baccs, bf1s, bps, brs, boot_preds_all]]
+    return [[predictions, accuracies, f1s, ps, rs], \
+        [boot_preds_all, baccs, bf1s, bps, brs]]
 
 def update_logs(logs, results):
-    """
-    normal, bootstrap = logs
-    for log_list, result in zip(logs, results):
-        log_list.append(result)
+    print("updating logs")
+    n_subj = len(config.heldout_subjects)
 
-    for i_sub in range(n_subj):
-        accuracies[i_sub].append(acc[i_sub])
-        predictions[i_sub].append(preds[i_sub])
-        true_labels[i_sub].append(test_y[i_sub])
-        f1s[i_sub].append(f1[i_sub])
-        ps[i_sub].append(p[i_sub])
-        rs[i_sub].append(r[i_sub])
-        if config.bootstrap:
-            baccs[i_sub].extend(bacc[i_sub])
-            bf1s[i_sub].extend(bf1[i_sub])
-            bps[i_sub].extend(bp[i_sub])
-            brs[i_sub].extend(br[i_sub])
-            boot_preds_all[i_sub].extend(boot_preds[i_sub])
-    train_accuracies.append(train_acc)
-    """
+    normal, bootstrap = list(zip(logs))
+    normal_res, bootstrap_res = list(zip(results))
+    for n, r in zip(normal, normal_res):
+        for i_subj in range(n_subj):
+            n[i_subj].append(r[i_subj])
+    for bn, br in zip(bootstrap, bootstrap_res):
+        for i_subj in range(n_subj):
+            bn[i_subj].extend(br[i_subj])
+    return list(zip(normal, bootstrap))
 
-def log_results(): 
+
+def log_results(logs, feats, subj_result_file): 
+    normal, bootstrap = list(zip(logs))
     for index, subject in enumerate(config.heldout_subjects):
-            # print results for individual subjects to file
-            if config.bootstrap:
-                with open('bootstrapping_low/bootstrpping_acc_'+subject+'_'+feats+'.npy', 'wb') as f:
-                    np.save(f, np.array(baccs[index]))
-                with open('bootstrapping_low/bootstrpping_f1_'+subject+'_'+feats+'.npy', 'wb') as f:
-                    np.save(f, np.array(bf1s[index]))
-                with open('bootstrapping_low/bootstrpping_p_'+subject+'_'+feats+'.npy', 'wb') as f:
-                    np.save(f, np.array(bps[index]))
-                with open('bootstrapping_low/bootstrpping_r_'+subject+'_'+feats+'.npy', 'wb') as f:
-                    np.save(f, np.array(brs[index]))
-                with open('bootstrapping_low/bootstrpping_preds_'+subject+'_'+feats+'.npy', 'wb') as f:
-                    np.save(f, np.array(boot_preds[index]))
-                
-            print("Classification test accuracy : ",  subject, feats, np.mean(accuracies[index]), np.std(accuracies[index]))
-            print(subject, feats,'accuracy',  np.mean(accuracies[index]), np.std(accuracies[index]),file=subj_result_file)
+        # print results for individual subjects to file
+        if config.bootstrap:
+            with open('bootstrapping_low/bootstrpping_acc_'+subject+'_'+feats+'.npy', 'wb') as f:
+                np.save(f, np.array(bootstrap[1][index]))
+            with open('bootstrapping_low/bootstrpping_f1_'+subject+'_'+feats+'.npy', 'wb') as f:
+                np.save(f, np.array(bootstrap[2][index]))
+            with open('bootstrapping_low/bootstrpping_p_'+subject+'_'+feats+'.npy', 'wb') as f:
+                np.save(f, np.array(bootstrap[3][index]))
+            with open('bootstrapping_low/bootstrpping_r_'+subject+'_'+feats+'.npy', 'wb') as f:
+                np.save(f, np.array(bootstrap[4][index]))
+            with open('bootstrapping_low/bootstrpping_preds_'+subject+'_'+feats+'.npy', 'wb') as f:
+                np.save(f, np.array(bootstrap[0][index]))
             
-            print("Classification test f1 : ",  subject, feats, np.mean(f1s[index]), np.std(f1s[index]))
-            print(subject, feats, 'f1', np.mean(f1s[index]), np.std(f1s[index]),file=subj_result_file)
+        print("Classification test accuracy : ",  subject, feats, np.mean(normal[1][index]), np.std(normal[1][index]))
+        print(subject, feats,'accuracy',  np.mean(normal[1][index]), np.std(normal[1][index]),file=subj_result_file)
         
-            print("Classification test precision : ",  subject, feats, np.mean(ps[index]), np.std(ps[index]))
-            print(subject, feats, 'precision', np.mean(ps[index]), np.std(ps[index]),file=subj_result_file)
-
-            print("Classification test recall : ",  subject, feats, np.mean(rs[index]), np.std(rs[index]))
-            print(subject, feats, 'recall', np.mean(rs[index]), np.std(rs[index]),file=subj_result_file)
+        print("Classification test f1 : ",  subject, feats, np.mean(normal[2][index]), np.std(normal[2][index]))
+        print(subject, feats, 'f1', np.mean(normal[2][index]), np.std(normal[2][index]),file=subj_result_file)
     
-            print("Saving subjects predictions file : ")
-            print(subject, feats, 'precision', np.mean(ps[index]), np.std(ps[index]),file=subj_result_file)
-            with open('predictions/'+subject+'_'+feats+'.npy', 'wb') as f:
-                np.save(f, np.array(predictions[index]))
+        print("Classification test precision : ",  subject, feats, np.mean([index]), np.std(normal[3][index]))
+        print(subject, feats, 'precision', np.mean(normal[3][index]), np.std(normal[3][index]),file=subj_result_file)
 
-            with open('true_labels/'+subject+'_'+feats+'.npy', 'wb') as f:
-                np.save(f, np.array(true_labels[index]))
+        print("Classification test recall : ",  subject, feats, np.mean(normal[4][index]), np.std(normal[4][index]))
+        print(subject, feats, 'recall', np.mean(normal[4][index]), np.std(normal[4][index]),file=subj_result_file)
+
+        print("Saving subjects predictions file : ")
+        with open('predictions/'+subject+'_'+feats+'.npy', 'wb') as f:
+            np.save(f, np.array(normal[0][index]))
+

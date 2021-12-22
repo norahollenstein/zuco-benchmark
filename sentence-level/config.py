@@ -2,8 +2,10 @@
 # dataset {zuco1, zuco2, zucoAll, zuco1sr, zuco1sr_only}
 dataset="zuco2"
 heldout_subjects = ["XBB", "XDT", "XLS", "XPB", "XSE", "XTR", "XWS", "XAH", "XBD", "XSS"]
+heldout_subjects = ["XBB"]
 heldout_dir = "../../methlab/ETH_AS/SAMUEL/Holdout/FirstLevelV2_concat_unfold_correctlyMergedSacc_avgref/"
 subjects = [ 'YAC', 'YAG', 'YAK', 'YDG', 'YDR', 'YFR', 'YFS', 'YHS', 'YIS', 'YLS', 'YMD', 'YRK', 'YRP', 'YSD', 'YSL', 'YTL']  # exclude YMH,  - YRH, YMS
+subjects = ['YAC']
 rootdir = "../../mehtlab_loc/ETH_AS/FirstLevelV2_concat_unfold_correctlyMergedSacc_avgref/"
 
 
@@ -16,6 +18,8 @@ plot_all_subjects_features = False
 mean_electrodes = False
 pca_preprocessing = True
 bootstrap = False
+# total bootstrap samples are multiplie by #runs
+n_bootstrap_samples = 100
 # why wouldn't you want to log results? 
 log_results = True
 # median amount of variance to be explaiend by PCA
@@ -23,19 +27,20 @@ explained_variance = 0.95
 plot_explained_variance = False
 plot_electrode_weights_pca=False
 # randomize labels as a sanity check; default = False
-randomized_labels = False
+randomized = False
 
 # sentence-level eye-tracking feature sets
 #feature_sets = ["fixation_number", "omission_rate", "reading_speed", 'sent_gaze', "mean_sacc_dur", "max_sacc_velocity", "mean_sacc_velocity", "max_sacc_dur", "max_sacc_amp", "mean_sacc_amp", 'sent_saccade', 'sent_gaze_sacc', "theta_mean", "alpha_mean", "beta_mean", "gamma_mean", "eeg_means", "sent_gaze_eeg_means",  "electrode_features_theta", "electrode_features_alpha", "electrode_features_beta", "electrode_features_gamma", "electrode_features_all", "electrode_gaze_sacc"]
 #feature_sets = ["reading_speed"]
 
 # sentence-level baseline feature
-feature_sets = ["flesch_baseline"]
+#feature_sets = ["flesch_baseline"]
 #electrode features 
 #feature_sets = ["electrode_features_gamma", "electrode_features_alpha", "electrode_features_beta", "electrode_features_all", "electrode_features_theta"]
 
 # feature sets for benchmark 
-feature_sets = ["electrode_features_all", "sent_gaze_sacc", "sent_gaze_sacc_eeg_means"]
+#feature_sets = ["electrode_features_all", "sent_gaze_sacc", "sent_gaze_sacc_eeg_means"]
+feature_sets = ["electrode_features_all"]
 
 # classification task {tasks, sessions, subjects, tasks-cross-subj, blocks, blocks-in-sets}
 class_task = 'tasks-cross-subj'

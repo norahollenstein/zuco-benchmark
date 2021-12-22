@@ -72,15 +72,13 @@ def main():
             logs = dh.prepare_logs()
         for i in range(config.runs):
             #preds, test_y, acc, coefs = classifier.svm_cross_subj(feats, config.seed+i, subject, config.randomized_labels)
-            preds, test_y, acc, p,r, f1, train_acc, bacc, bf1, bp, br, boot_preds = classifier.benchmark(train['features'][feats], \
-                train['labels'][feats], test['features'][feats], test['labels'][feats], \
-                    config.seed+i, config.randomized_labels, config.bootstrap)
-            # TODO
-            #if config.log_results:
-            #    logs = dh.update_logs(logs)
+            results = classifier.benchmark(train['features'][feats], \
+                train['labels'][feats], test['features'][feats], test['labels'][feats])
+            if config.log_results:
+                logs = dh.update_logs(logs, results)
         #print("Classification train accuracy clf: ",feats, np.mean(train_accuracies), np.std(train_accuracies))
-        #if config.log_results: 
-        #    dh.write_logs(logs)
+        if config.log_results: 
+            dh.write_logs(logs, feats, subj_result_file)
 
     elapsed = (time.time() - start)
     print(str(timedelta(seconds=elapsed)))
