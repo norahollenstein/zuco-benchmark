@@ -2,4 +2,4 @@
 
 Data, description and challenge can all be found on [zuco-benchmark.com](https://www.zuco-benchmark.com./)
 
-Further information on how to get the baseline results is coming soon
+The code used for creating the baseline results is available [here](https://github.com/norahollenstein/zuco-benchmark/blob/main/sentence-level/benchmark.py)
