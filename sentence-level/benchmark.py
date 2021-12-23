@@ -13,7 +13,7 @@ import data_helpers as dh
 
 """
 Perform classification on the heldout set for the benchmark task.
-TODO make more elegant and easier to read
+This is the code used to create the baseline in the paper. 
 
 """
 

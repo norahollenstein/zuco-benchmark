@@ -25,17 +25,36 @@ def build_data(data, labels):
 
 
 def bootstrap_confidence(clf, test_X, test_y, index, subj):
-    """Bootrap metrics"""
+    """
+    Bootrap the confidence interval
+    :param clf: classifier
+    :param test_X: test data
+    :param test_y: test labels
+    :param index: index of the subject
+    :param subj: subject
 
-    accs, ps, rs, f1s, b_preds = [], [], [], [], []
-    resampled_Xs, resampled_ys = [resample(test_X[index], test_y[index], replace=True, \
-        n_samples=len(test_X),random_state=config.seed+i) \
-            for i in range(config.n_bootstraps)]
-    return zip(*[predict_subject(clf, resampled_Xs,resampled_ys,data_index, subj)\
-             for data_index in range(config.n_bootstraps)])
+    :return: boostrap predictions
+    """
+
+    resampled_Xs, resampled_ys = zip(*[resample(test_X[index], test_y[index], replace=True, \
+        n_samples=len(test_X[index]),random_state=config.seed+i) \
+            for i in range(config.n_bootstraps)])
+    test = list(map(list, zip(*[predict_subject(clf, resampled_Xs,resampled_ys,data_index, subj)\
+             for data_index in range(config.n_bootstraps)])))
+    return test
+
 
 def predict_subject(clf, test_X, test_y, index, subj):
-    """Predict on a single subject"""
+    """
+    Predict on a single subject
+    :param clf: classifier
+    :param test_X: test data
+    :param test_y: test labels
+    :param index: index of the subject
+    :param subj: subject
+
+    :return: predictions for a single subject
+    """
 
     print("\nPredicting on subject ", subj)
     prediction = clf.predict(test_X[index])
@@ -43,13 +62,22 @@ def predict_subject(clf, test_X, test_y, index, subj):
         prop = 390/739
         prediction = np.random.choice([0,1], len(prediction), p=[prop, 1-prop]) 
     accuracy = len([i for i, j in zip(prediction, test_y[index]) if i == j]) / len(test_y[index])
-    print('Accuracy ', accuracy)
+    print('Accuracy: ', accuracy)
     p,r,f1,_ = precision_recall_fscore_support(test_y[index], prediction, average='macro')
-    print('F1 ', f1)
-    return prediction, accuracy, f1, p,r
+    print('F1 score: ', f1)
+    return [prediction], accuracy, f1, p,r
 
 def benchmark(X, y, test_X, test_y): 
-    """Classification for the benchmark task."""
+    """
+    Classification for the benchmark task.
+    
+    :param X: training data
+    :param y: training labels
+    :param test_X: test data
+    :param test_y: test labels
+
+    :return: predictions and scores for the test data
+    """
 
     np.random.seed(config.seed)
     #preprocess data
@@ -57,6 +85,7 @@ def benchmark(X, y, test_X, test_y):
     train_X, train_y = build_data(X, y)
     builded= zip(*[build_data({subj:test_X[subj]}, {subj:test_y[subj]}) \
         for subj in test_X])
+    builded = list(map(list, builded))
     test_X, test_y = builded
     train_X, train_y = shuffle(train_X, train_y)
 
@@ -75,13 +104,14 @@ def benchmark(X, y, test_X, test_y):
     print("Train accuracy ", train_acc)
 
     # predict on all subjects
-    results = list(zip(*[predict_subject(clf,test_X,test_y,index, subj)\
-             for index, subj in enumerate(config.heldout_subjects)]))
-    results.append(train_acc)
-    bootstrap_results = []
-    if config.bootstrap:
-         bootstrap_results = list(zip(*[bootstrap_confidence(clf,test_X,test_y,index, subj)\
-             for index, subj in enumerate(config.heldout_subjects)]))
+    results = zip(*[predict_subject(clf,test_X,test_y,index, subj)\
+             for index, subj in enumerate(config.heldout_subjects)])
+    results = list(map(list, results))
 
-    return results+bootstrap_results
+    bootstrap_results = [[]]
+    if config.bootstrap:
+         bootstrap_results = zip(*[bootstrap_confidence(clf,test_X,test_y,index, subj)\
+             for index, subj in enumerate(config.heldout_subjects)])
+         bootstrap_results = list(map(list, bootstrap_results))
+    return [results]+[bootstrap_results]
         

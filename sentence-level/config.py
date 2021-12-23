@@ -2,24 +2,24 @@
 # dataset {zuco1, zuco2, zucoAll, zuco1sr, zuco1sr_only}
 dataset="zuco2"
 heldout_subjects = ["XBB", "XDT", "XLS", "XPB", "XSE", "XTR", "XWS", "XAH", "XBD", "XSS"]
-heldout_subjects = ["XBB"]
+heldout_subjects = ["XBB", "XDT"]
 heldout_dir = "../../methlab/ETH_AS/SAMUEL/Holdout/FirstLevelV2_concat_unfold_correctlyMergedSacc_avgref/"
 subjects = [ 'YAC', 'YAG', 'YAK', 'YDG', 'YDR', 'YFR', 'YFS', 'YHS', 'YIS', 'YLS', 'YMD', 'YRK', 'YRP', 'YSD', 'YSL', 'YTL']  # exclude YMH,  - YRH, YMS
-subjects = ['YAC']
+subjects = ['YAC', 'YAG']
 rootdir = "../../mehtlab_loc/ETH_AS/FirstLevelV2_concat_unfold_correctlyMergedSacc_avgref/"
 
 
 # experiment setup
 seed = 1
-runs = 1
+runs = 2
 plot_top_electrodes = False
 plot_all_subjects_features = False
 # experiment modifications
 mean_electrodes = False
 pca_preprocessing = True
-bootstrap = False
+bootstrap = True
 # total bootstrap samples are multiplie by #runs
-n_bootstrap_samples = 100
+n_bootstraps = 10
 # why wouldn't you want to log results? 
 log_results = True
 # median amount of variance to be explaiend by PCA
