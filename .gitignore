@@ -10,3 +10,4 @@ predictions/*
 word-level
 matlab/*.png
 matlab/*.pdf
+plots
