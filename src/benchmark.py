@@ -18,7 +18,7 @@ This is the code used to create the baseline in the paper.
 """
 
 def get_or_extract_features(subjects, dir):
-    print("extracting features")
+    print("Extracting features")
     """
     Extract features for all subjects.
     """
@@ -62,6 +62,8 @@ def get_or_extract_features(subjects, dir):
 
 def main():
     start = time.time()
+    if not os.path.exists("results"):
+         os.makedirs("results")
     subj_result_file = dh.prepare_output_file()
     train = get_or_extract_features(config.subjects, config.rootdir)
     test = get_or_extract_features(config.heldout_subjects, config.heldout_dir)
