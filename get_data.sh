@@ -19,15 +19,13 @@ rm -r d7frw
 echo "Downloading NR train-data from osf, this may take a while"
 osf -p 2abup clone
 echo "Finished downloading NR train-data now cleaning"
-mv d7frw/dropbox data/train
+mv 2abup/osfstorage/Features/ data/train
 rm -r 2abup
 
 echo "Downloading TSR train-data from osf, this may take a while"
 osf -p 6etg8 clone
 echo "Finished downloading TSR train-data now cleaning"
-cp -r 6etg8/dropbox/* data/train
+cp -r 6etg8/osfstorage/Features/* data/train
 rm -r 6etg8
 
-echo "Finished all data"
-
-
+echo "Finished downloading data"
