@@ -8,3 +8,5 @@ features/*
 feature_plots/*
 predictions/*
 word-level
+matlab/*.png
+matlab/*.pdf
