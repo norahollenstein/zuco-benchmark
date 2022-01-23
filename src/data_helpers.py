@@ -272,7 +272,7 @@ def log_results(logs, feats, subj_result_file):
         print("Classification test recall : ",  subject, feats, np.mean(normal[4][index]), np.std(normal[4][index]))
         print(subject, feats, 'recall', np.mean(normal[4][index]), np.std(normal[4][index]),file=subj_result_file)
 
-        print("Saving subjects predictions file : ")
+        print("Saving subject ", subject, " to predictions file")
         with open('predictions/'+subject+'_'+feats+'.npy', 'wb') as f:
             np.save(f, np.array(normal[0][index]))
  
@@ -301,6 +301,6 @@ def write_logs_predictions(logs, feats):
     if not os.path.exists("predictions"):
         os.makedirs("predictions")
     for index, subject in enumerate(config.heldout_subjects):
-        print("Saving subjects predictions file : ")
+        print("Saving subject ", subject, " to predictions file")
         with open('predictions/'+subject+'_'+feats+'.npy', 'wb') as f:
             np.save(f, np.array(logs[index]))

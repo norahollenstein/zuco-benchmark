@@ -1,6 +1,4 @@
 from datetime import timedelta
-from sklearn.decomposition import PCA
-from sklearn.preprocessing import MinMaxScaler
 import numpy as np
 import os
 import time
@@ -12,9 +10,8 @@ import data_helpers as dh
 
 
 """
-Perform classification on the heldout set for the benchmark task.
-This is the code used to create the baseline in the paper. 
-
+Perform and evaluate classification on the heldout set for.
+This code was used to create the baseline in the paper. 
 """
 
 def get_or_extract_features(subjects, dir):

@@ -2,7 +2,7 @@
 # dataset {zuco1, zuco2, zucoAll, zuco1sr, zuco1sr_only}
 dataset="zuco2"
 heldout_subjects = ["XBB", "XDT", "XLS", "XPB", "XSE", "XTR", "XWS", "XAH", "XBD", "XSS"]
-heldout_subjects = ["XBB", "XDT"]
+heldout_subjects = ["XBB", "XDT", "XLS"]
 heldout_dir = "../data/test/"
 subjects = [ 'YAC', 'YAG', 'YAK', 'YDG', 'YDR', 'YFR', 'YFS', 'YHS', 'YIS', 'YLS', 'YMD', 'YRK', 'YRP', 'YSD', 'YSL', 'YTL']  # exclude YMH,  - YRH, YMS
 subjects = ['YAC', 'YAG']
