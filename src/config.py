@@ -2,10 +2,8 @@
 # dataset {zuco1, zuco2, zucoAll, zuco1sr, zuco1sr_only}
 dataset="zuco2"
 heldout_subjects = ["XBB", "XDT", "XLS", "XPB", "XSE", "XTR", "XWS", "XAH", "XBD", "XSS"]
-heldout_subjects = ["XBB", "XDT", "XLS"]
 heldout_dir = "../data/test/"
 subjects = [ 'YAC', 'YAG', 'YAK', 'YDG', 'YDR', 'YFR', 'YFS', 'YHS', 'YIS', 'YLS', 'YMD', 'YRK', 'YRP', 'YSD', 'YSL', 'YTL']  # exclude YMH,  - YRH, YMS
-subjects = ['YAC', 'YAG']
 rootdir = "../data/train/"
 
 
@@ -29,22 +27,17 @@ plot_electrode_weights_pca=False
 # randomize labels as a sanity check; default = False
 randomized = False
 
-# sentence-level eye-tracking feature sets
-#feature_sets = ["fixation_number", "omission_rate", "reading_speed", 'sent_gaze', "mean_sacc_dur", "max_sacc_velocity", "mean_sacc_velocity", "max_sacc_dur", "max_sacc_amp", "mean_sacc_amp", 'sent_saccade', 'sent_gaze_sacc', "theta_mean", "alpha_mean", "beta_mean", "gamma_mean", "eeg_means", "sent_gaze_eeg_means",  "electrode_features_theta", "electrode_features_alpha", "electrode_features_beta", "electrode_features_gamma", "electrode_features_all", "electrode_gaze_sacc"]
-#feature_sets = ["reading_speed"]
-
-# sentence-level baseline feature
-#feature_sets = ["flesch_baseline"]
-#electrode features 
-#feature_sets = ["electrode_features_gamma", "electrode_features_alpha", "electrode_features_beta", "electrode_features_all", "electrode_features_theta"]
-
-# feature sets for benchmark 
+####### feature sets for benchmark: Choose from here #######
 #feature_sets = ["electrode_features_all", "sent_gaze_sacc", "sent_gaze_sacc_eeg_means"]
 feature_sets = ["electrode_features_all"]
 
-# classification task {tasks, sessions, subjects, tasks-cross-subj, blocks, blocks-in-sets}
-class_task = 'tasks-cross-subj'
+####### Other feature sets ########
+#feature_sets = ["fixation_number", "omission_rate", "reading_speed", 'sent_gaze', "mean_sacc_dur", "max_sacc_velocity", "mean_sacc_velocity", "max_sacc_dur", "max_sacc_amp", "mean_sacc_amp", 'sent_saccade', 'sent_gaze_sacc', "theta_mean", "alpha_mean", "beta_mean", "gamma_mean", "eeg_means", "sent_gaze_eeg_means",  "electrode_features_theta", "electrode_features_alpha", "electrode_features_beta", "electrode_features_gamma", "electrode_features_all", "electrode_gaze_sacc"]
 
+####### Baseline feature #######
+#feature_sets = ["flesch_baseline"]
+
+class_task = 'tasks-cross-subj'
 
 # SVM params
 kernel = 'linear' # only linear kernel allows for analysis of coefficients
