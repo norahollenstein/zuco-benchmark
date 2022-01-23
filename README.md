@@ -21,14 +21,14 @@ Install the dependecies:
 
 ### Data
 
-Warning: the dataset is about 70 GB
-To download the data execute  
+Warning: the dataset is about 70 GB  
+You can also just download individual files from the [OSF](https://osf.io/d7frw/)  
+To download the whole dataset, execute  
 ```bash get_data.sh ``` 
 
 
 ### Compute the benchmark baseline results
-
-Execute 
+ 
 
 ```cd src ```  
 ```python benchmark_baseline.py```
