@@ -1,9 +1,11 @@
 # Reading Task Classification
+<p align="left">
+<img src="neuroimage.jpg" width="500" /> 
+</p>
 
-Data, description and challenge can all be found on [zuco-benchmark.com](https://www.zuco-benchmark.com./)
+More information can be found on [zuco-benchmark.com](https://www.zuco-benchmark.com./)
 
-The code we used for creating the baseline results is available [here](https://github.com/norahollenstein/zuco-benchmark/blob/main/sentence-level/benchmark.py)
-
+The code we used for creating the baseline results is available [here](https://github.com/norahollenstein/zuco-benchmark/blob/main/src/benchmark.py)
 
 ## Get started
 
@@ -27,8 +29,10 @@ To download the whole dataset, execute
 ```bash get_data.sh ``` 
 
 
-### Compute the benchmark baseline results
- 
+### Compute baseline results
 
 ```cd src ```  
-```python benchmark_baseline.py```
+Select feature-set and other configurations in [config.py](https://github.com/norahollenstein/zuco-benchmark/blob/main/src/config.py).  
+Run the code to produce baseline predictions with the SVM and your configurations:    
+```python benchmark_baseline.py```  
+Use the code as a starting point for trying different models or extracting your own features. 
