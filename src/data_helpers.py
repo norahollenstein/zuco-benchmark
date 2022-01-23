@@ -5,6 +5,7 @@ import seaborn as sns
 import pandas as pd
 import numpy as np
 import math
+import os
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import MinMaxScaler
@@ -16,11 +17,13 @@ def prepare_output_file():
         config.randomized) + "_" + config.kernel + ".csv", "a")
     return result_file
 
+
 def read_mat_file(filename):
     """Read MATLAB files with EEG data"""
     mat_file = h5py.File(filename, 'r')
     sentence_data = mat_file['sentenceData']
     return sentence_data
+
 
 def plot_feature_distribution(subj, dataset, feature_dict, feature_set):
     """Plot feature distribution for a single feature"""
@@ -49,6 +52,7 @@ def plot_feature_distribution(subj, dataset, feature_dict, feature_set):
     fig.savefig("feature_plots/"+ feature_set + "_" +subj+".pdf")
     plt.close()
 
+
 def plot_all_subjects_feature_distribution(subjects, dataset, feature_dict):
     """Plot feature distributions for a single feature for all subjects"""
     colors = ["#44A2C4", "#B3D882"]
@@ -76,6 +80,7 @@ def plot_all_subjects_feature_distribution(subjects, dataset, feature_dict):
         fig.savefig("feature-plots/all_features_all_subjects/"+ feature_set + "_" +"all_subjects"+".pdf")
         plt.close()
 
+
 def plot_explained_variance(feature_set, explained_variance_ratios): 
     """ Plot the amont of variance explained by the PCA-features for each subject """
     NUM_COLORS = len(config.subjects)
@@ -93,6 +98,7 @@ def plot_explained_variance(feature_set, explained_variance_ratios):
     plt.title("Explained Variance for " + feature_set, fontsize=50)
     plt.legend(fontsize=40, ncol=2)
     plt.savefig("feature-plots/elbow/"+ feature_set +".pdf")
+
 
 def plot_electrode_weights_pca(subjects_feats, feature_set, mode):
     """ Plot influence of individual electrodes on PCA-features """
@@ -129,6 +135,7 @@ def plot_electrode_weights_pca(subjects_feats, feature_set, mode):
         w.writerows(subjects_data)
     plt.savefig("feature-plots/electrode_weights_pca/"+ feature_set+"_"+mode +".pdf")
 
+
 def pca_preprocessing(features, pca_n_components, mode='train'):
     "fit and apply pca to subjects"
     subjects_feats = features['features']
@@ -150,6 +157,7 @@ def pca_preprocessing(features, pca_n_components, mode='train'):
             print('feat ', feature_set, " subject: ", subj, "Explained_variance_ratio sum : ", np.sum(pca.explained_variance_ratio_*100))                     
     return {'features': subjects_feats, 'labels': labels}
 
+
 def determine_pca_n_components(features):
     """
     Determine the number of components to use for PCA.
@@ -170,6 +178,7 @@ def determine_pca_n_components(features):
     print('n components ', np.median(subjects_pca_results))
     #print('n components ', int(math.ceil(np.median(subjects_pca_results))))
     return int(math.ceil(np.median(subjects_pca_results)))
+
 
 def apply_pca_preprocessing(train, test):
     """ Apply PCA preprocessing only to some parts of the data TODO simplify """
@@ -202,12 +211,11 @@ def apply_pca_preprocessing(train, test):
                 'labels':{**eeg_features_train['labels'], **et_features_train['labels']}}
         test = {'features':{**eeg_features_test['features'], **et_features_test['features']},
                 'labels':{**eeg_features_test['labels'], **et_features_test['labels']}}
-
     return train, test
 
 
 def prepare_logs():
-    "prepare log files"
+    "Prepare log files in case the labels are also available"
     # preds, test_y, acc, p,r, f1, train_acc, bacc, bf1, bp, br, boot_preds
     n_subj = len(config.heldout_subjects)
     accuracies = [[] for _ in range(n_subj)]; predictions = [[] for _ in range(n_subj)]; 
@@ -219,10 +227,11 @@ def prepare_logs():
     return [[predictions, accuracies, f1s, ps, rs], \
         [boot_preds_all, baccs, bf1s, bps, brs]]
 
+
 def update_logs(logs, results):
+    "Save log files in case the labels are also available"
     print("updating logs")
     n_subj = len(config.heldout_subjects)
-
     normal, bootstrap = list(zip(logs))
     normal_res, bootstrap_res = list(zip(results))
     for n, r in zip(normal, normal_res):
@@ -235,6 +244,7 @@ def update_logs(logs, results):
 
 
 def log_results(logs, feats, subj_result_file): 
+    "Save log files in case the labels are also available"
     normal, bootstrap = list(zip(logs))
     for index, subject in enumerate(config.heldout_subjects):
         # print results for individual subjects to file
@@ -265,4 +275,32 @@ def log_results(logs, feats, subj_result_file):
         print("Saving subjects predictions file : ")
         with open('predictions/'+subject+'_'+feats+'.npy', 'wb') as f:
             np.save(f, np.array(normal[0][index]))
+ 
 
+ ################### No Labels are available ##############################
+
+
+def prepare_logs_predictions():
+    "Prepare log files for predictions when no labels are available"
+    n_subj = len(config.heldout_subjects)
+    predictions = [[] for _ in range(n_subj)]
+    return predictions
+
+
+def update_logs_predictions(logs, results):
+    "Update log files for predictions when no labels are available"
+    print("Updating logs")
+    n_subj = len(config.heldout_subjects)
+    for i_subj in range(n_subj):
+        logs[i_subj].append(results[i_subj])
+    return logs
+
+
+def write_logs_predictions(logs, feats):
+    "Save log files for predictions when no labels are available"
+    if not os.path.exists("predictions"):
+        os.makedirs("predictions")
+    for index, subject in enumerate(config.heldout_subjects):
+        print("Saving subjects predictions file : ")
+        with open('predictions/'+subject+'_'+feats+'.npy', 'wb') as f:
+            np.save(f, np.array(logs[index]))

@@ -114,4 +114,63 @@ def benchmark(X, y, test_X, test_y):
              for index, subj in enumerate(config.heldout_subjects)])
          bootstrap_results = list(map(list, bootstrap_results))
     return [results]+[bootstrap_results]
+
+
+def predict_subject_baseline(clf, test_X, index, subj):
+    """
+    Predict on a single subject
+    :param clf: classifier
+    :param test_X: test data
+    :param index: index of the subject
+    :param subj: subject
+
+    :return: predictions for a single subject
+    """
+
+    print("\nPredicting on subject ", subj)
+    prediction = clf.predict(test_X[index])
+    return prediction
+
+
+def benchmark_baseline(X, y, test_X, test_y): 
+    """
+    Classification for the benchmark task.
+    
+    :param X: training data
+    :param y: training labels
+    :param test_X: test data
+    :param test_y: dummy labels
+
+    :return: predictions for the test data
+    """
+
+    np.random.seed(config.seed)
+    #preprocess data
+    print("\nPre-processing ")
+    train_X, train_y = build_data(X, y)
+    builded= zip(*[build_data({subj:test_X[subj]}, {subj:test_y[subj]}) \
+        for subj in test_X])
+    builded = list(map(list, builded))
+    test_X, test_y = builded
+    train_X, train_y = shuffle(train_X, train_y)
+
+    # scale feature values
+    scaling = MinMaxScaler(feature_range=(0, 1)).fit(train_X)
+    train_X = scaling.transform(train_X)
+    test_X = [scaling.transform(subj) for subj in test_X]
+    
+    print("\nTraining on all subjects in the train split ")
+    # train SVM classifier
+    clf = SVC(random_state=config.seed, kernel=config.kernel, \
+        gamma='scale', cache_size=1000)
+
+    clf.fit(train_X, train_y)
+    train_acc = len([i for i, j in zip(clf.predict(train_X), train_y) if i == j]) / len(train_y)
+    print("Train accuracy ", train_acc)
+
+    # predict on all subjects
+    results = [predict_subject_baseline(clf,test_X,index, subj)\
+             for index, subj in enumerate(config.heldout_subjects)]
+    print(results)
+    return results
         

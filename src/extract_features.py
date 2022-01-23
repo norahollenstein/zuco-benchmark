@@ -90,9 +90,11 @@ def relabel_blocks(idx, label_orig):
 
 def extract_sentence_features(subject, f, feature_set, feature_dict, label_orig):
     """extract sentence level features from Matlab struct"""
-
+    
+        
     rawData = f['rawData']
-    contentData = f['content']
+    if label_orig!="":
+        contentData = f['content']
 
     print(len(rawData))
 
@@ -109,11 +111,12 @@ def extract_sentence_features(subject, f, feature_set, feature_dict, label_orig)
                 or config.class_task == "tasks_blocks":
                 label = relabel_blocks(idx, label)
 
-            obj_reference_content = contentData[idx][0]
-            sent = dlh.load_matlab_string(f[obj_reference_content])
+            if label_orig!="":
+                obj_reference_content = contentData[idx][0]
+                sent = dlh.load_matlab_string(f[obj_reference_content])
 
-            # Flesch reading ease score
-            fre = flesch_reading_ease(sent)
+                # Flesch reading ease score
+                fre = flesch_reading_ease(sent)
 
             # omission rate
             omissionR = f['omissionRate']

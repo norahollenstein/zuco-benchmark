@@ -3,15 +3,15 @@
 dataset="zuco2"
 heldout_subjects = ["XBB", "XDT", "XLS", "XPB", "XSE", "XTR", "XWS", "XAH", "XBD", "XSS"]
 heldout_subjects = ["XBB", "XDT"]
-heldout_dir = "../../methlab/ETH_AS/SAMUEL/Holdout/FirstLevelV2_concat_unfold_correctlyMergedSacc_avgref/"
+heldout_dir = "../data/test/"
 subjects = [ 'YAC', 'YAG', 'YAK', 'YDG', 'YDR', 'YFR', 'YFS', 'YHS', 'YIS', 'YLS', 'YMD', 'YRK', 'YRP', 'YSD', 'YSL', 'YTL']  # exclude YMH,  - YRH, YMS
 subjects = ['YAC', 'YAG']
-rootdir = "../../mehtlab_loc/ETH_AS/FirstLevelV2_concat_unfold_correctlyMergedSacc_avgref/"
+rootdir = "../data/train/"
 
 
 # experiment setup
 seed = 1
-runs = 2
+runs = 3
 plot_top_electrodes = False
 plot_all_subjects_features = False
 # experiment modifications
