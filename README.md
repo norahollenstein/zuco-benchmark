@@ -18,7 +18,7 @@
 
 The [Zurich Cognitive Language Processing Corpus (ZuCo 2.0)](https://osf.io/2urht/) is a dataset combining EEG and eye-tracking recordings from subjects reading natural sentences as a resource for the investigation of the human reading process in adult English native speakers.
 
-The benchmark task consists of a cross-subject classification to distinguish between two reading paradigms: normal reading and task-specific information searching. 
+The benchmark consists of a cross-subject classification to distinguish between normal reading and task-specific information searching. 
 
 
 ## How Can I Use This Repository?
