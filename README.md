@@ -3,9 +3,9 @@
 
 ## 🧭 Starting from here you can:
 
-📖 Read the [manuscript](https://www.biorxiv.org/content/10.1101/2022.03.08.483414v1).
+📖 Read the [manuscript](https://www.frontiersin.org/articles/10.3389/fpsyg.2022.1028824/full).
 
-ℹ️ Gather more information on [zuco-benchmark.com](https://www.zuco-benchmark.com./)
+ℹ️ Gather more information on [zuco-benchmark.com](https://zuco-benchmark.github.io/zuco-benchmark/)
 
 💻 Look at [our code](https://github.com/norahollenstein/zuco-benchmark/blob/main/src/benchmark.py) for creating the baseline results
 
