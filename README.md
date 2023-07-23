@@ -1,7 +1,7 @@
 # Welcome to the ZuCo Benchmark on Reading Task Classification!
 
 
-## 🧭 Starting from here you can:
+## 🧭 Starting from here, you can:
 
 📖 Read the [manuscript](https://www.frontiersin.org/articles/10.3389/fpsyg.2022.1028824/full).
 
@@ -18,7 +18,7 @@
 
 The [Zurich Cognitive Language Processing Corpus (ZuCo 2.0)](https://osf.io/2urht/) is a dataset combining EEG and eye-tracking recordings from subjects reading natural sentences as a resource for the investigation of the human reading process in adult English native speakers.
 
-The benchmark consists of a cross-subject classification to distinguish between normal reading and task-specific information searching. 
+The benchmark is a cross-subject classification to distinguish between normal reading and task-specific information searching. 
 
 
 ## How Can I Use This Repository?
@@ -26,7 +26,10 @@ The benchmark consists of a cross-subject classification to distinguish between 
 This repository is supposed to give you a starting point to participate in our challenge.  
 To run the code, follow the steps: 
 
-### Dependecies
+### Dependencies 
+Version: **Python 3.7.16**    
+Using newer versions may lead to conflicts with h5py. 
+Should you encounter any installation difficulties, please don't hesitate to open an issue.  
 
 1. Install pip 
 2. Create a virtual environment and activate it
