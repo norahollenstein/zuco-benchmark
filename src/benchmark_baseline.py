@@ -43,7 +43,7 @@ def get_or_extract_features(subjects, dir, train_feats=True):
                 np.save(feature_path, features[feature_set])
 
     if config.plot_all_subjects_features: 
-        dh.plot_all_subjects_feature_distribution(config.subjects, config.dataset, features)
+        dh.plot_all_subjects_feature_distribution(features)
     subjects_feats = {}
     labels = {}
     for feature_set in config.feature_sets: 
