@@ -252,34 +252,35 @@ def prepare_logs():
 
 def update_logs(logs, results):
     "Save log files in case the labels are also available"
-    print("updating logs")
     n_subj = len(config.heldout_subjects)
-    normal, bootstrap = list(zip(logs))
-    normal_res, bootstrap_res = list(zip(results))
+    normal, bootstrap = logs[:]
+    normal_res, bootstrap_res = results[:]
     for n, r in zip(normal, normal_res):
         for i_subj in range(n_subj):
             n[i_subj].append(r[i_subj])
-    for bn, br in zip(bootstrap, bootstrap_res):
-        for i_subj in range(n_subj):
-            bn[i_subj].extend(br[i_subj])
-    return list(zip(normal, bootstrap))
+    if config.bootstrap:
+        for bn, br in zip(bootstrap, bootstrap_res):
+            for i_subj in range(n_subj):
+                bn[i_subj].extend(br[i_subj])
+    return [normal] + [bootstrap]
 
 
 def log_results(logs, feats, subj_result_file):
     "Save log files in case the labels are also available"
-    normal, bootstrap = list(zip(logs))
+    normal, bootstrap = logs
     for index, subject in enumerate(config.heldout_subjects):
         # print results for individual subjects to file
         if config.bootstrap:
+            Path("bootstrapping_low").mkdir(parents=True, exist_ok=True)
             with open('bootstrapping_low/bootstrpping_acc_'+subject+'_'+feats+'.npy', 'wb') as f:
                 np.save(f, np.array(bootstrap[1][index]))
-            with open('bootstrapping_low/bootstrpping_f1_'+subject+'_'+feats+'.npy', 'wb') as f:
+            with open('bootstrapping_low/bootstrapping_f1_'+subject+'_'+feats+'.npy', 'wb') as f:
                 np.save(f, np.array(bootstrap[2][index]))
-            with open('bootstrapping_low/bootstrpping_p_'+subject+'_'+feats+'.npy', 'wb') as f:
+            with open('bootstrapping_low/bootstrapping_p_'+subject+'_'+feats+'.npy', 'wb') as f:
                 np.save(f, np.array(bootstrap[3][index]))
-            with open('bootstrapping_low/bootstrpping_r_'+subject+'_'+feats+'.npy', 'wb') as f:
+            with open('bootstrapping_low/bootstrapping_r_'+subject+'_'+feats+'.npy', 'wb') as f:
                 np.save(f, np.array(bootstrap[4][index]))
-            with open('bootstrapping_low/bootstrpping_preds_'+subject+'_'+feats+'.npy', 'wb') as f:
+            with open('bootstrapping_low/bootstrapping_preds_'+subject+'_'+feats+'.npy', 'wb') as f:
                 np.save(f, np.array(bootstrap[0][index]))
 
         print("Classification test accuracy : ",  subject, feats,
