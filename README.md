@@ -7,7 +7,7 @@
 
 ℹ️ Gather more information on [zuco-benchmark.com](https://zuco-benchmark.github.io/zuco-benchmark/)
 
-💻 Look at [our code](https://github.com/norahollenstein/zuco-benchmark/blob/main/src/benchmark.py) for creating the baseline results
+💻 Look at [our code](https://github.com/norahollenstein/zuco-benchmark/blob/main/src/benchmark_baseline.py) for creating the baseline results
 
 🏆 Create models or custom feature sets and participate in [our challenge at EvalAI](https://eval.ai/web/challenges/challenge-page/2125/overview)
 
@@ -47,7 +47,17 @@ To download the whole dataset, execute
 ### Computing the Baseline Results
 
 ```cd src ```  
-Select feature-set and other configurations in [config.py](https://github.com/norahollenstein/zuco-benchmark/blob/main/src/config.py).  
-Run the code to produce baseline predictions with the SVM and your configurations:    
+Run the code to produce baseline predictions with the SVM.    
 ```python benchmark_baseline.py```  
-Use the code as a starting point for trying different models or extracting your own features. 
+
+### Participation
+
+You can use the code in ```benchmark_baseline.py``` as a starting point and:
+- Try different models.
+- Use other feature sets or combinations. See [config.py](https://github.com/norahollenstein/zuco-benchmark/blob/main/src/config.py) for available feature sets
+- Create your own features  
+
+### Submission
+If you have ```create_submission``` enabled in the [config](https://github.com/norahollenstein/zuco-benchmark/blob/main/src/config.py), the code will automatically create a submission file in the correct format.  
+For the submission format, check out the [example files](https://github.com/norahollenstein/zuco-benchmark/tree/main/src/submissions).  
+Head to [EvalAI](https://eval.ai/web/challenges/challenge-page/2125/submission), fill in the required information and upload your submission.json. 
