@@ -9,7 +9,7 @@
 
 💻 Look at [our code](https://github.com/norahollenstein/zuco-benchmark/blob/main/src/benchmark.py) for creating the baseline results
 
-🏆 Create your own models and participate in [our challenge at EvalAI](https://eval.ai/web/challenges/challenge-page/1444/overview)
+🏆 Create models or custom feature sets and participate in [our challenge at EvalAI](https://eval.ai/web/challenges/challenge-page/2125/overview)
 
 ## About ZuCo and the Reading Task Classification
 
