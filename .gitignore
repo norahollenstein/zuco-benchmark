@@ -11,3 +11,8 @@ word-level
 matlab/*.png
 matlab/*.pdf
 plots
+
+data/
+features/
+predictions/
+bootstrapping*

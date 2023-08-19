@@ -171,6 +171,5 @@ def benchmark_baseline(X, y, test_X, test_y):
     # predict on all subjects
     results = [predict_subject_baseline(clf,test_X,index, subj)\
              for index, subj in enumerate(config.heldout_subjects)]
-    print(results)
     return results
         

@@ -10,7 +10,7 @@ from matplotlib import cm
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import MinMaxScaler
-
+import json
 import config
 
 
@@ -91,6 +91,7 @@ def plot_all_subjects_feature_distribution(feature_dict):
 def plot_explained_variance(feature_set, explained_variance_ratios):
     """ Plot the amont of variance explained by the PCA-features for each subject """
     NUM_COLORS = len(config.subjects)
+    Path("feature-plots/elbow/").mkdir(parents=True, exist_ok=True)
     color = cm.rainbow(np.linspace(0, 1, NUM_COLORS))
     fig = plt.figure(figsize=(25, 15))
     ax = fig.add_subplot(111)
@@ -110,6 +111,7 @@ def plot_explained_variance(feature_set, explained_variance_ratios):
 def plot_electrode_weights_pca(subjects_feats, feature_set, mode):
     """ Plot influence of individual electrodes on PCA-features """
     pca = PCA(n_components=0.95)
+    Path("feature-plots/electrode_weights_pca/").mkdir(parents=True, exist_ok=True)
     plt.figure(figsize=(25, 15))
     subjects_data = []
     for subj in subjects_feats[feature_set]:
@@ -140,7 +142,7 @@ def plot_electrode_weights_pca(subjects_feats, feature_set, mode):
     ax.set_ylabel('Subjects')
     import csv
     # You will need 'wb' mode in Python 2.x
-    with open("electrode_weights_pca_" + feature_set+"_"+mode + ".csv", 'w') as f:
+    with open("feature-plots/electrode_weights_pca/electrode_weights_pca_" + feature_set+"_"+mode + ".csv", 'w') as f:
         w = csv.writer(f)
         w.writerows(subjects_data)
     plt.savefig("feature-plots/electrode_weights_pca/" +
@@ -190,14 +192,13 @@ def determine_pca_n_components(features):
                   "Explained_variance_ratio sum : ", pca.explained_variance_ratio_)
         if config.plot_explained_variance:
             plot_explained_variance(feature_set, subjects_explained_variance)
-    print(subjects_pca_results)
     print('n components ', np.median(subjects_pca_results))
     # print('n components ', int(math.ceil(np.median(subjects_pca_results))))
     return int(math.ceil(np.median(subjects_pca_results)))
 
 
 def apply_pca_preprocessing(train, test):
-    """ Apply PCA preprocessing only to some parts of the data TODO simplify """
+    """ Apply PCA preprocessing only to some parts of the data"""
     eeg_features_train = {'features': {}, 'labels': {}}
     et_features_train = {'features': {}, 'labels': {}}
     eeg_features_test = {'features': {}, 'labels': {}}
@@ -225,10 +226,10 @@ def apply_pca_preprocessing(train, test):
             eeg_features_train, pca_n_components, mode='train')
         eeg_features_test = pca_preprocessing(
             eeg_features_test, pca_n_components, mode='test')
-        train = {'features': {**eeg_features_train['features'], **et_features_train['features']},
-                 'labels': {**eeg_features_train['labels'], **et_features_train['labels']}}
-        test = {'features': {**eeg_features_test['features'], **et_features_test['features']},
-                'labels': {**eeg_features_test['labels'], **et_features_test['labels']}}
+        train['features'] = {**eeg_features_train['features'], **et_features_train['features']}
+        train['labels'] = {**eeg_features_train['labels'], **et_features_train['labels']}
+        test['features'] =  {**eeg_features_test['features'], **et_features_test['features']}
+        test['labels'] = {**eeg_features_test['labels'], **et_features_test['labels']}
     return train, test
 
 
@@ -334,3 +335,21 @@ def write_logs_predictions(logs, feats):
         print("Saving subject ", subject, " to predictions file")
         with open('predictions/'+subject+'_'+feats+'.npy', 'wb') as f:
             np.save(f, np.array(logs[index]))
+
+
+def create_submission(logs, feature, idxs):
+    "Create Submission for benchmark"
+    directory = "submissions/"
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+    print("Creating submission for feature: ", feature)
+    submission_file = {}
+    for index, subject in enumerate(config.heldout_subjects):
+        submission_file[subject] = {}
+        # If we have multiple runs, we just select the first
+        result = logs[index][0].tolist()
+        idx = idxs[feature][subject]
+        for pred, id in zip(result, idx):
+            submission_file[subject][id] = pred
+    with open(directory+feature+'.json', 'w') as f:
+        json.dump(submission_file, f)

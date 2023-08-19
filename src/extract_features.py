@@ -4,6 +4,9 @@ import numpy as np
 import readability
 from nltk import word_tokenize
 import config
+import data_helpers as dh
+import h5py
+import json
 
 
 def flesch_reading_ease(text):
@@ -88,23 +91,21 @@ def relabel_blocks(idx, label_orig):
     return label
 
 
+
 def extract_sentence_features(subject, f, feature_set, feature_dict, label_orig):
-    """extract sentence level features from Matlab struct"""
-    
-        
+    """extract sentence level features from Matlab struct"""  
     rawData = f['rawData']
     if label_orig!="":
         contentData = f['content']
-
-    print(len(rawData))
-
+    else:
+        with open("subject_lnorm.json", "r") as file:
+            contentData = json.load(file)
+        
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", category=FutureWarning)
-        for idx, sent_data in enumerate(rawData):
-
+        for idx, _ in enumerate(rawData):
             label = label_orig
             full_idx = len(feature_dict[feature_set])
-
             if config.class_task == "sessions":
                 label = relabel_sessions(idx, label)
             if config.class_task == "blocks" or config.class_task == "blocks-in-sets"\
@@ -114,10 +115,11 @@ def extract_sentence_features(subject, f, feature_set, feature_dict, label_orig)
             if label_orig!="":
                 obj_reference_content = contentData[idx][0]
                 sent = dlh.load_matlab_string(f[obj_reference_content])
-
                 # Flesch reading ease score
                 fre = flesch_reading_ease(sent)
-
+                lnorm = len(sent.split())
+            else:
+                lnorm = contentData[subject][idx]
             # omission rate
             omissionR = f['omissionRate']
             obj_reference_omr = omissionR[idx][0]
@@ -218,13 +220,13 @@ def extract_sentence_features(subject, f, feature_set, feature_dict, label_orig)
 
             elif feature_set == "fixation_number":
                 if 'duration' in af:
-                    weighted_nFix = np.array(af['duration']).shape[0] / len(sent.split())
+                    weighted_nFix = np.array(af['duration']).shape[0] / lnorm
                     feature_dict[feature_set][subject + "_" + label + "_" + str(idx) + "_" + str(full_idx)] = [weighted_nFix, label]
 
             elif feature_set == "reading_speed":
                 if 'duration' in af:
                     # convert sample to seconds
-                    weighted_speed = (np.sum(np.array(af['duration']))*2/100) / len(sent.split())
+                    weighted_speed = (np.sum(np.array(af['duration']))*2/100) / lnorm
                     feature_dict[feature_set][subject + "_" + label + "_" + str(idx) + "_" + str(full_idx)] = [weighted_speed, label]
 
             elif feature_set == "mean_sacc_dur":
@@ -247,14 +249,14 @@ def extract_sentence_features(subject, f, feature_set, feature_dict, label_orig)
 
             elif feature_set == "sent_gaze":
                 if 'duration' in af:
-                    weighted_nFix = np.array(af['duration']).shape[0] / len(sent.split())
-                    weighted_speed = (np.sum(np.array(af['duration'])) * 2 / 100) / len(sent.split())
+                    weighted_nFix = np.array(af['duration']).shape[0] / lnorm
+                    weighted_speed = (np.sum(np.array(af['duration'])) * 2 / 100) / lnorm
                     feature_dict[feature_set][subject + "_" + label + "_" + str(idx) + "_" + str(full_idx)] = [omr, weighted_nFix, weighted_speed, smeand, label]
 
             elif feature_set == "sent_gaze_sacc":
                 if 'duration' in af:
-                    weighted_nFix = np.array(af['duration']).shape[0] / len(sent.split())
-                    weighted_speed = (np.sum(np.array(af['duration'])) * 2 / 100) / len(sent.split())
+                    weighted_nFix = np.array(af['duration']).shape[0] / lnorm
+                    weighted_speed = (np.sum(np.array(af['duration'])) * 2 / 100) / lnorm
                     feature_dict[feature_set][subject + "_" + label + "_" + str(idx) + "_" + str(full_idx)] = [omr, weighted_nFix, weighted_speed, smeand, smaxv, smeanv, smaxd, smeana, smaxa, label]
 
             elif feature_set == "sent_saccade":
@@ -304,16 +306,16 @@ def extract_sentence_features(subject, f, feature_set, feature_dict, label_orig)
 
             elif feature_set == "sent_gaze_eeg_means":
                 if 'duration' in af and not np.isnan(g_mean) and not np.isnan(t_mean) and not np.isnan(b_mean) and not np.isnan(a_mean):
-                    weighted_nFix = np.array(af['duration']).shape[0] / len(sent.split())
-                    weighted_speed = (np.sum(np.array(af['duration'])) * 2 / 100) / len(sent.split())
+                    weighted_nFix = np.array(af['duration']).shape[0] / lnorm
+                    weighted_speed = (np.sum(np.array(af['duration'])) * 2 / 100) / lnorm
                     feature_dict[feature_set][subject + "_" + label + "_" + str(idx) + "_" + str(full_idx)] = [omr, weighted_nFix, weighted_speed,
                                                                                          smeand, smaxv, smeanv, smaxd, t_mean, a_mean, b_mean, g_mean,
                                                                                          label]
                                                                                                                                                                   
             elif feature_set == "sent_gaze_sacc_eeg_means":
                 if 'duration' in af and not np.isnan(g_mean) and not np.isnan(t_mean) and not np.isnan(b_mean) and not np.isnan(a_mean):
-                    weighted_nFix = np.array(af['duration']).shape[0] / len(sent.split())
-                    weighted_speed = (np.sum(np.array(af['duration'])) * 2 / 100) / len(sent.split())
+                    weighted_nFix = np.array(af['duration']).shape[0] / lnorm
+                    weighted_speed = (np.sum(np.array(af['duration'])) * 2 / 100) / lnorm
                     feature_dict[feature_set][subject + "_" + label + "_" + str(idx) + "_" + str(full_idx)] = [omr, weighted_nFix, weighted_speed,
                                                                                          smeand, smaxv, smeanv, smaxd, smeana, smaxa, t_mean, a_mean, b_mean, g_mean,
                                                                                          label]
@@ -351,13 +353,9 @@ def extract_fixation_features(subject, f, feature_set, feature_dict, label_orig)
                         else:
                             fixations_indices[widx] += 1
                         fixation_avg = np.nanmean(word_data[widx]["RAW_EEG"][fixations_indices[widx]], axis=0)
-                        #print(fixation_avg)
                     else:
                         fixation_avg = np.nanmean(word_data[widx]["RAW_EEG"][0], axis=0)
                     fix_order_raw_eeg.append(fixation_avg)
-
-                #print(fix_order_raw_eeg[0])
-
 
                 word_g1_electrodes = []; word_g2_electrodes = [];
                 sent_feats = []; sent_trt_t1 = []; sent_trt_t2 = []; sent_trt_a1 = []; sent_trt_a2 = []; sent_trt_b1 = [];
@@ -415,7 +413,6 @@ def extract_fixation_features(subject, f, feature_set, feature_dict, label_orig)
                 elif feature_set == 'fix_order_raw_eeg_electrodes_10%' and fix_order_raw_eeg:
                     p10 = max(round(len(fix_order_raw_eeg) / 10), 1) # at least 1 fixation if sentence contains <10
                     avg = np.nanmean(fix_order_raw_eeg[:p10], axis=0)
-                    #print(avg)
                     if not np.isnan(avg).any():
                         feature_dict[feature_set][subject + "_" + label + "_" + str(idx) + "_" + str(full_idx)] = list(avg) + [label]
 
