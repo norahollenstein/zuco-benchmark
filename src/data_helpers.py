@@ -337,7 +337,7 @@ def write_logs_predictions(logs, feats):
             np.save(f, np.array(logs[index]))
 
 
-def create_submission(logs, feature, idxs):
+def create_submission(logs, feature, idxs, model="svm"):
     "Create Submission for benchmark"
     directory = "submissions/"
     if not os.path.exists(directory):
@@ -351,5 +351,5 @@ def create_submission(logs, feature, idxs):
         idx = idxs[feature][subject]
         for pred, id in zip(result, idx):
             submission_file[subject][id] = pred
-    with open(directory+feature+'.json', 'w') as f:
+    with open(f'{directory}{datetime.now().strftime("%Y%m%d-%H%M%S")}_{model}_{feature}.json', 'w') as f:
         json.dump(submission_file, f)
