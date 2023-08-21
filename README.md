@@ -5,7 +5,7 @@
 
 📖 Read the [manuscript](https://www.frontiersin.org/articles/10.3389/fpsyg.2022.1028824/full).
 
-ℹ️ Gather more information on [zuco-benchmark.com](https://zuco-benchmark.github.io/zuco-benchmark/)
+:link: Gather more information on [zuco-benchmark.com](https://zuco-benchmark.github.io/zuco-benchmark/)
 
 💻 Look at [our code](https://github.com/norahollenstein/zuco-benchmark/blob/main/src/benchmark_baseline.py) for creating the baseline results
 
