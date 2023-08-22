@@ -62,9 +62,11 @@ If you downloaded the whole dataset, the script will first extract the selected 
 You can use the code in ```benchmark_baseline.py``` as a starting point and:
 - Try different models.
 - Use other feature sets or combinations. See [config.py](https://github.com/norahollenstein/zuco-benchmark/blob/main/src/config.py) for available feature sets
-- Create your own feature combinations.
+- Create your own feature combinations. To do that, take a look at the [feature-extraction](https://github.com/norahollenstein/zuco-benchmark/blob/06636628f08db17789d65a42836f45091affaa75/src/extract_features.py#L95C2-L95C2) and add your own feature combination there. 
+
+To experiment with different models or feature combinations, you can use the [validation.py](https://github.com/norahollenstein/zuco-benchmark/blob/main/src/validation.py), which tests your configuration using leave-one-out cross-validation on the training data.
 
 ## Submission
-If you have ```create_submission``` enabled in the [config](https://github.com/norahollenstein/zuco-benchmark/blob/main/src/config.py), the code will automatically create a submission file in the correct format.  
+If you have ```create_submission``` enabled in the [config](https://github.com/norahollenstein/zuco-benchmark/blob/main/src/config.py), ```benchmark_baseline.py``` will automatically create a submission file in the correct format.  
 For the submission format, check out the [example files](https://github.com/norahollenstein/zuco-benchmark/tree/main/src/submissions).  
 Head to [EvalAI](https://eval.ai/web/challenges/challenge-page/2125/submission), fill in the required information and upload your submission.json. 
